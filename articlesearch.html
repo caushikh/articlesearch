@@ -4,12 +4,39 @@
 	<title>New York Times Article Search</title>
 	<link rel=stylesheet type="text/css" href="articlesearch.css">
 	<meta charset="utf-8"/>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script>
+		function getarticles() {
+			$(document).ready( function() {
+				var httpobj;
+				var url;
+				var query;
+				
+				if (window.XMLHttpRequest) {
+					httpobj = new XMLHttpRequest();
+				}
+				else {
+					httpobj = new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				
+				httpobj.onreadystatechange = function() {
+					if (httpobj.readyState == 4 && httpobj.status == 200)
+					{
+						// parse JSON object and list articles
+					}
+				}
+				
+				// create AJAX request
+				// send AJAX request
+			});
+		}
+	</script>
 </head>
 <body>
 	<div id="content">
 		<h1>Article Search</h1>
-		<form>
-			Search for: <input type="text">
+		<form method="GET" action="getarticles()">
+			Search for: <input id="search" type="text">
 			<input type="submit" value="Go">
 		</form>
 	</div>
