@@ -4,32 +4,26 @@
 	<title>New York Times Article Search</title>
 	<link rel=stylesheet type="text/css" href="articlesearch.css">
 	<meta charset="utf-8"/>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script>
-		function getarticles() {
-			$(document).ready( function() {
-				var httpobj;
-				var url;
-				var query;
-				
-				if (window.XMLHttpRequest) {
-					httpobj = new XMLHttpRequest();
-				}
-				else {
-					httpobj = new ActiveXObject("Microsoft.XMLHTTP");
-				}
-				
-				httpobj.onreadystatechange = function() {
-					if (httpobj.readyState == 4 && httpobj.status == 200)
-					{
-						// parse JSON object and list articles
-					}
+		//	$(document).ready( function() {
+				function getarticles() {	
+					var data = {
+						api-key: c0c330c0c330db0d3ea95a756df250ed6bab09:18:69413026
+					};
+					var results = $.ajax({
+						type: "GET",
+						url: "http://api.nytimes.com/svc/search/v2/articlesearch.json" + '?' + $.param(data),
+						crossDomain: true,
+						dataType: "jsonp",
+						jsonp: "process"
+					});
 				}
 				
-				// create AJAX request
-				// send AJAX request
-			});
-		}
+				function process(results) { 
+					$("#results").append("<b>results.response.docs[0].snippet</b>");
+				}
+		//	});
 	</script>
 </head>
 <body>
@@ -39,6 +33,7 @@
 			Search for: <input id="search" type="text">
 			<input type="submit" value="Go">
 		</form>
+		<div id="results"></div>
 	</div>
 </body>
 </html>
