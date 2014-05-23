@@ -6,37 +6,35 @@
 	<meta charset="utf-8"/>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script>
-		//	$(document).ready( function() {
-				function getarticles() {
-					alert($("#search").val());
-					var querystr = $("#search").val();
-				//	var data = {
-				//		api-key: c0c330c0c330db0d3ea95a756df250ed6bab09:18:69413026
-				//	};
-					$.ajax({
-						data: {
-							"q": querystr,
-							"api-key": "c0c330db0d3ea95a756df250ed6bab09:18:69413026"
-						},
-						dataType: 'json',
-						jsonp: "svc_search_v2_articlesearch",
-						url: "http://api.nytimes.com/svc/search/v2/articlesearch.json",
-						success: process
-					});
-				}
+		function getarticles() {
+			var querystr = $("#search").val();
+			var beginstr = $("#begin").val();
+			var endstr = $("#end").val();
+			$.ajax({
+				data: {
+					"q": querystr,
+					"api-key": "c0c330db0d3ea95a756df250ed6bab09:18:69413026",
+					"begin_date": beginstr,
+					"end_date": endstr
+				},
+				dataType: 'jsonp',
+				jsonpCallback: 'svc_search_v2_articlesearch',
+				url: "http://api.nytimes.com/svc/search/v2/articlesearch.jsonp",
+				success: process
+			});
+		}
 				
-				function process(results, status, reqobj) { 
-					alert('entered code');
-					$("#results").empty();
-					var i;
-					var add=""
-					for (var i=0; i < results.response.docs.length; i++)
-					{
-						$("#results").append("<a href=\"" + results.response.docs[i].web_url +"\">"+results.response.docs[i].snippet+"</a>");
-						$("#results").append("<p>" + results.response.docs[i].lead_paragraph +"</p><br>");
-					}
-				}
-		//	});
+		function process(results, status, reqobj) { 
+			$("#results").empty();
+			var i;
+			var add = "";
+			for (var i=0; i < results.response.docs.length; i++)
+			{
+				add += "<a href=\"" + results.response.docs[i].web_url + "\">";
+				add += results.response.docs[i].snippet + "\"</a><br>";
+			}
+			$("#results").append(add);
+		}
 	</script>
 </head>
 <body>
@@ -44,6 +42,8 @@
 		<h1>Article Search</h1>
 		<form>
 			Search for: <input id="search" type="text">
+			Begin Date: <input id="begin" type="text">
+			End Date: <input id="end" type="text">
 			<input type="button" onclick="getarticles()" value="Go">
 		</form>
 		<div id="results"></div>
