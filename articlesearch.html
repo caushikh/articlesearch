@@ -7,21 +7,34 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script>
 		//	$(document).ready( function() {
-				function getarticles() {	
-					var data = {
-						api-key: c0c330c0c330db0d3ea95a756df250ed6bab09:18:69413026
-					};
-					var results = $.ajax({
-						type: "GET",
-						url: "http://api.nytimes.com/svc/search/v2/articlesearch.json" + '?' + $.param(data),
-						crossDomain: true,
-						dataType: "jsonp",
-						jsonp: "process"
+				function getarticles() {
+					alert($("#search").val());
+					var querystr = $("#search").val();
+				//	var data = {
+				//		api-key: c0c330c0c330db0d3ea95a756df250ed6bab09:18:69413026
+				//	};
+					$.ajax({
+						data: {
+							"q": querystr,
+							"api-key": "c0c330db0d3ea95a756df250ed6bab09:18:69413026"
+						},
+						dataType: 'json',
+						jsonp: "svc_search_v2_articlesearch",
+						url: "http://api.nytimes.com/svc/search/v2/articlesearch.json",
+						success: process
 					});
 				}
 				
-				function process(results) { 
-					$("#results").append("<b>results.response.docs[0].snippet</b>");
+				function process(results, status, reqobj) { 
+					alert('entered code');
+					$("#results").empty();
+					var i;
+					var add=""
+					for (var i=0; i < results.response.docs.length; i++)
+					{
+						$("#results").append("<a href=\"" + results.response.docs[i].web_url +"\">"+results.response.docs[i].snippet+"</a>");
+						$("#results").append("<p>" + results.response.docs[i].lead_paragraph +"</p><br>");
+					}
 				}
 		//	});
 	</script>
@@ -29,9 +42,9 @@
 <body>
 	<div id="content">
 		<h1>Article Search</h1>
-		<form method="GET" action="getarticles()">
+		<form>
 			Search for: <input id="search" type="text">
-			<input type="submit" value="Go">
+			<input type="button" onclick="getarticles()" value="Go">
 		</form>
 		<div id="results"></div>
 	</div>
