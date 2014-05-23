@@ -9,13 +9,15 @@
 		function getarticles() {
 			var querystr = $("#search").val();
 			var beginstr = $("#begin").val();
+			alert(beginstr);
+			alert(beginstr.stringify());
 			var endstr = $("#end").val();
 			$.ajax({
 				data: {
 					"q": querystr,
 					"api-key": "c0c330db0d3ea95a756df250ed6bab09:18:69413026",
-					"begin_date": beginstr,
-					"end_date": endstr
+				//	"begin_date": beginstr,
+				//	"end_date": endstr
 				},
 				dataType: 'jsonp',
 				jsonpCallback: 'svc_search_v2_articlesearch',
@@ -42,8 +44,8 @@
 		<h1>Article Search</h1>
 		<form>
 			Search for: <input id="search" type="text">
-			Begin Date: <input id="begin" type="text">
-			End Date: <input id="end" type="text">
+			Begin Date: <input id="begin" type="date">
+			End Date: <input id="end" type="date">
 			<input type="button" onclick="getarticles()" value="Go">
 		</form>
 		<div id="results"></div>
