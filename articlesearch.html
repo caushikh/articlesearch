@@ -6,24 +6,31 @@
 	<meta charset="utf-8"/>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script>
+	
+		var querystr;
+		var beginstr;
+		var endstr;
 		function getarticles() {
-			var querystr = $("#search").val();
-			var beginstr = $("#begin").val();
-			alert(beginstr);
-			alert(beginstr.stringify());
-			var endstr = $("#end").val();
-			$.ajax({
-				data: {
-					"q": querystr,
-					"api-key": "c0c330db0d3ea95a756df250ed6bab09:18:69413026",
-				//	"begin_date": beginstr,
-				//	"end_date": endstr
-				},
-				dataType: 'jsonp',
-				jsonpCallback: 'svc_search_v2_articlesearch',
-				url: "http://api.nytimes.com/svc/search/v2/articlesearch.jsonp",
-				success: process
-			});
+			querystr = $("#search").val();
+			beginstr = $("#begin").val();
+			endstr = $("#end").val();
+			
+			beginstr = modstr(beginstr);
+			endstr = modstr(endstr);
+			if (validate()) {
+				$.ajax({
+					data: {
+						"q": querystr,
+						"api-key": "c0c330db0d3ea95a756df250ed6bab09:18:69413026",
+						"begin_date": beginstr,
+						"end_date": endstr
+					},
+					dataType: 'jsonp',
+					jsonpCallback: 'svc_search_v2_articlesearch',
+					url: "http://api.nytimes.com/svc/search/v2/articlesearch.jsonp",
+					success: process
+				});
+			}
 		}
 				
 		function process(results, status, reqobj) { 
@@ -33,15 +40,64 @@
 			for (var i=0; i < results.response.docs.length; i++)
 			{
 				add += "<a href=\"" + results.response.docs[i].web_url + "\">";
-				add += results.response.docs[i].snippet + "\"</a><br>";
+				add += results.response.docs[i].headline.main + "</a><br>";
 			}
 			$("#results").append(add);
+		}
+		
+		function modstr(str) {
+			str = str.replace("-","");
+			str = str.replace("-","");
+			return str;
+		}
+		
+		function validate() {
+			// no search string specified
+			if (querystr == "") {
+				$("#error").html("<h3>Please type something in the search box.</h3>");
+				return false;
+			}
+			$("#error").empty();
+			
+			// begin date not entered properly
+			if (beginstr == "") {
+				beginstr = "18510918";
+				$("#beginmsg").html("<h3>The begin date was not specified properly so by default, September 18, 1951 will be used for it</h3>");
+			}
+			else {
+				$("#beginmsg").empty();
+			}
+			
+			// begin date not in proper range
+			if (parseInt(beginstr) < 18510918) {
+				$("#error").html("<h3>The begin date must be after September 18, 1851.</h3>");
+				return false;
+			}
+			
+			// end date not specified
+			if (endstr == "") {
+				var full = new Date();
+				var y = full.getFullYear();
+				y = y * 10000;
+				var m = (full.getMonth() + 1) * 100;
+				var d = full.getDay();
+				var datenum = y + m + d;
+				endstr = datenum.toString();
+				$("#endmsg").html("<h3>The end date was not specified properly so by default, today's date will be used for it</h3>");
+			}
+			else {
+				$("#endmsg").empty();
+			}			
+			return true;
 		}
 	</script>
 </head>
 <body>
 	<div id="content">
 		<h1>Article Search</h1>
+		<div id="error"></div>
+		<div id="beginmsg"></div>
+		<div id="endmsg"></div>
 		<form>
 			Search for: <input id="search" type="text">
 			Begin Date: <input id="begin" type="date">
