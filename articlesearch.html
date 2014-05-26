@@ -2,11 +2,15 @@
 <html>
 <head>
 	<title>New York Times Article Search</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<link rel=stylesheet type="text/css" href="articlesearch.css">
 	<meta charset="utf-8"/>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 	<script>
-	
+		var page = 0;
 		var querystr;
 		var beginstr;
 		var endstr;
@@ -23,7 +27,8 @@
 						"q": querystr,
 						"api-key": "c0c330db0d3ea95a756df250ed6bab09:18:69413026",
 						"begin_date": beginstr,
-						"end_date": endstr
+						"end_date": endstr,
+						"page": page
 					},
 					dataType: 'jsonp',
 					jsonpCallback: 'svc_search_v2_articlesearch',
@@ -36,12 +41,13 @@
 		function process(results, status, reqobj) { 
 			$("#results").empty();
 			var i;
-			var add = "";
+			var add = "<ul class=\"list-group\">";
 			for (var i=0; i < results.response.docs.length; i++)
 			{
-				add += "<a href=\"" + results.response.docs[i].web_url + "\">";
-				add += results.response.docs[i].headline.main + "</a><br>";
+				add += "<li class=\"list-group-item\"><a href=\"" + results.response.docs[i].web_url + "\">";
+				add += results.response.docs[i].headline.main + "</a></li><br>";
 			}
+			add += "</ul>";
 			$("#results").append(add);
 		}
 		
@@ -54,7 +60,7 @@
 		function validate() {
 			// no search string specified
 			if (querystr == "") {
-				$("#error").html("<h3>Please type something in the search box.</h3>");
+				$("#error").html("<h5>Please type something in the search box.</h5>");
 				return false;
 			}
 			$("#error").empty();
@@ -62,7 +68,7 @@
 			// begin date not entered properly
 			if (beginstr == "") {
 				beginstr = "18510918";
-				$("#beginmsg").html("<h3>The begin date was not specified properly so by default, September 18, 1951 will be used for it</h3>");
+				$("#beginmsg").html("<h5>The begin date was not specified properly so by default, September 18, 1851 will be used for it</h5>");
 			}
 			else {
 				$("#beginmsg").empty();
@@ -70,7 +76,7 @@
 			
 			// begin date not in proper range
 			if (parseInt(beginstr) < 18510918) {
-				$("#error").html("<h3>The begin date must be after September 18, 1851.</h3>");
+				$("#error").html("<h5>The begin date must be after September 18, 1851.</h5>");
 				return false;
 			}
 			
@@ -83,28 +89,42 @@
 				var d = full.getDay();
 				var datenum = y + m + d;
 				endstr = datenum.toString();
-				$("#endmsg").html("<h3>The end date was not specified properly so by default, today's date will be used for it</h3>");
+				$("#endmsg").html("<h5>The end date was not specified properly so by default, today's date will be used for it</h5>");
 			}
 			else {
 				$("#endmsg").empty();
 			}			
 			return true;
 		}
+		function decpage() {
+			if (page > 0) {
+				page--;
+			}
+			getarticles();
+		}	
+		function incpage() {
+			page++;
+			getarticles();
+		}
 	</script>
 </head>
 <body>
 	<div id="content">
 		<h1>Article Search</h1>
-		<div id="error"></div>
-		<div id="beginmsg"></div>
-		<div id="endmsg"></div>
 		<form>
-			Search for: <input id="search" type="text">
+			<span class="glyphicon glyphicon-search"></span><input id="search" type="text" placeholder="Search">
 			Begin Date: <input id="begin" type="date">
 			End Date: <input id="end" type="date">
 			<input type="button" onclick="getarticles()" value="Go">
 		</form>
+		<div id="error"></div>
+		<div id="beginmsg"></div>
+		<div id="endmsg"></div>
 		<div id="results"></div>
+		<ul class="pager">
+			<li><a onclick="decpage()">Previous</a></li>
+			<li><a onclick="incpage()">Next</a></li>
+		</ul>
 	</div>
 </body>
 </html>

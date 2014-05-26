@@ -3,11 +3,20 @@ html {
 	width: 100%;
 	font-family: sans-serif;
 }
+body {
+	background-color: #e5eeee;
+	height: 100%;
+	width: 100%;
+}
 h1 {
 	text-align: center;
-}	
+}
 #content {
-	height: 100%;
 	width: 50%;
 	margin: 0 auto;
+	padding: 2%;
+	background-color: #FFFFFF;
+}
+#error, #beginmsg, #endmsg {
+	color: #FF0000;
 }
